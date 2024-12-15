@@ -8,6 +8,6 @@ import "net/http"
 //	@description    Read health
 //	@tags           health
 //	@success        200
-//	@router         /../livez [get]
+//	@router         /../health [get]
 func Read(w http.ResponseWriter, r *http.Request) {
 }
