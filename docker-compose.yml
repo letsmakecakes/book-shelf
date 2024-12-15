@@ -14,5 +14,5 @@ services:
       - POSTGRES_USER=book_shelf_user
       - POSTGRES_PASSWORD=book_shelf_pass
     ports:
-      - "5432:5432"
+      - "5480:5432"
     restart: always
