@@ -62,22 +62,6 @@ func NewConfig() *Config {
 	return &config
 }
 
-func NewDB() *DatabaseConfig {
-	v := viper.New()
-
-	v.AutomaticEnv()
-
-	dbConfig := &DatabaseConfig{
-		Host:     v.GetString("DB_HOST"),
-		Port:     v.GetInt("DB_PORT"),
-		User:     v.GetString("DB_USER"),
-		Password: v.GetString("DB_PASSWORD"),
-		Name:     v.GetString("DB_NAME"),
-	}
-
-	return dbConfig
-}
-
 func parseDuration(duration string) time.Duration {
 	d, err := time.ParseDuration(duration)
 	if err != nil {
