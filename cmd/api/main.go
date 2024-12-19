@@ -4,6 +4,10 @@ import (
 	"book-shelf/api/router"
 	"book-shelf/config"
 	"errors"
+	"fmt"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
 	"net/http"
 )
@@ -20,12 +24,29 @@ import (
 
 // @host       localhost:8080
 // @basePath   /v1
+
+const fmtDBString = "host=%s user=%s password=%s dbname=%s port=%d sslmode=disable"
+
 func main() {
 	c := config.NewConfig()
 
-	r := router.New()
+	var logLevel logger.LogLevel
+	if c.Server.Debug {
+		logLevel = logger.Info
+	} else {
+		logLevel = logger.Error
+	}
+
+	dbString := fmt.Sprintf(fmtDBString, c.DB.Host, c.DB.User, c.DB.Password, c.DB.Name, c.DB.Port)
+	db, err := gorm.Open(postgres.Open(dbString), &gorm.Config{Logger: logger.Default.LogMode(logLevel)})
+	if err != nil {
+		log.Fatal("DB connection start failure")
+		return
+	}
+
+	r := router.New(db)
 	s := &http.Server{
-		Addr:         ":8080",
+		Addr:         fmt.Sprintf(":%d", c.Server.Port),
 		Handler:      r,
 		ReadTimeout:  c.Server.ReadTimeout,
 		WriteTimeout: c.Server.WriteTimeout,
