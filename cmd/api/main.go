@@ -3,6 +3,7 @@ package main
 import (
 	"book-shelf/api/router"
 	"book-shelf/config"
+	"book-shelf/util/validator"
 	"errors"
 	"fmt"
 	"gorm.io/driver/postgres"
@@ -29,6 +30,7 @@ const fmtDBString = "host=%s user=%s password=%s dbname=%s port=%d sslmode=disab
 
 func main() {
 	c := config.NewConfig()
+	v := validator.New()
 
 	var logLevel logger.LogLevel
 	if c.Server.Debug {
@@ -44,7 +46,7 @@ func main() {
 		return
 	}
 
-	r := router.New(db)
+	r := router.New(db, v)
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%d", c.Server.Port),
 		Handler:      r,
